@@ -18,9 +18,8 @@ process.on('SIGINT', () => {
         client.close();
     });
 
-    server.close(() => {
-        shutdownDB();
-    });
+    shutdownDB();
+    server.close();
 });
 
 /** Begin websockets */
@@ -80,6 +79,11 @@ function shutdownDB() {
     getCounts();
     console.log('Shutting down db');
     db.close((err) => {
-        console.log(err);
+        if (err) {
+            console.error('Error closing the database:', err);
+        } else {
+            console.log('Database closed');
+        }
+        process.exit(0);
     });
 }
